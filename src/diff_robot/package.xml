@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>diff_robot</name>
+  <version>1.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="thichchoivelkoz@gmail.com">duyphamrobotics</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <!-- CHANGE -->
+  <depend>urdf_tutorial</depend>
+  <depend>xacro</depend>
+  <!-- CHANGE -->
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <!-- CHANGE -->
+    <gazebo_ros gazebo_model_path="${prefix}/.."/>
+    <!-- CHANGE -->
+  </export>
+</package>
