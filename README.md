@@ -7,6 +7,7 @@
 - Integrate simulation plugins
 - Provide ready-to-use launch files for visualization and testing
 
+## How to run
 ```bash
 ros2 launch diff_robot gazebo.launch.py
 ```
