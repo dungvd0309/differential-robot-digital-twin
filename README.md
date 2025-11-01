@@ -1,6 +1,6 @@
 # Differential Robot Digital Twin
 
-
+[Differential Robot Firmware](https://github.com/dungvd0309/differential-robot-firmware)
 ## Packages
 ### diff_robot:
 - Convert solid-based URDF → Gazebo-compatible URDF
