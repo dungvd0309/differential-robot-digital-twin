@@ -6,7 +6,7 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 
-base_wheel_track = 0.213
+base_wheel_track = 0.2336
 
 class HardwareBridge(Node):
     
@@ -32,7 +32,7 @@ class HardwareBridge(Node):
         # Update the timestamp to the current time
         msg.header.stamp = self.get_clock().now().to_msg()  
         # Republish the message on the /joint_states topic
-        self.joint_state_publisher_.publish(msg)
+        # self.joint_state_publisher_.publish(msg)
         self.get_logger().debug(f"Relayed JointState with new timestamp: {msg.header.stamp}")
 
         
