@@ -15,8 +15,8 @@ class HardwareBridge(Node):
         self.joint_state_publisher_ = self.create_publisher(
             JointState, "/joint_states", 10)
         
-        self.twist_publisher_ = self.create_publisher(
-            Twist, "/cmd_vel", 10)
+        # self.twist_publisher_ = self.create_publisher(
+        #     Twist, "/cmd_vel", 10)
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
@@ -25,7 +25,7 @@ class HardwareBridge(Node):
 
         # Subscribe to the input joint states, e.g., from a simulation or another driver
         self.joint_state_subscriber_ = self.create_subscription(
-            JointState, "/hardware_states", self.joint_state_callback, qos_profile)
+            JointState, "/encoders/data_raw", self.joint_state_callback, qos_profile)
         self.get_logger().info("hardware_bridge has been started")
 
     def joint_state_callback(self, msg: JointState):
@@ -37,18 +37,18 @@ class HardwareBridge(Node):
         self.get_logger().debug(f"Relayed JointState with new timestamp: {msg.header.stamp}")
 
         # Publish a Twist msg by twist_publisher_
-        left_vel = msg.velocity[0]
-        right_vel = msg.velocity[1]
-        linear_x = (right_vel + left_vel) / 2
-        angular_z = (right_vel - left_vel) / base_wheel_track
+        # left_vel = msg.velocity[0]
+        # right_vel = msg.velocity[1]
+        # linear_x = (right_vel + left_vel) / 2
+        # angular_z = (right_vel - left_vel) / base_wheel_track
 
-        twist_msg = Twist()
-        twist_msg.linear.x = linear_x
-        twist_msg.angular.z = angular_z
-        self.twist_publisher_.publish(twist_msg)
+        # twist_msg = Twist()
+        # twist_msg.linear.x = linear_x
+        # twist_msg.angular.z = angular_z
+        # self.twist_publisher_.publish(twist_msg)
 
         # self.get_logger().info(f"left_vel: {left_vel}, right_vel: {right_vel}")
-        self.get_logger().info(f"linear_x: {linear_x}, angular_z: {angular_z}")
+        # self.get_logger().info(f"linear_x: {linear_x}, angular_z: {angular_z}")
 
 def main(args=None):
     rclpy.init(args=args)

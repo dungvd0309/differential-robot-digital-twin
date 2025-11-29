@@ -40,16 +40,16 @@ def generate_launch_description():
     )
 
     # --- 3. Joint State Publisher GUI ---
-    jsp_gui_node = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        name='joint_state_publisher_gui',
-        output='screen',
-        parameters=[{
-            'use_sim_time': use_sim_time,
-            'robot_description': robot_desc
-        }]
-    )
+    # jsp_gui_node = Node(
+    #     package='joint_state_publisher_gui',
+    #     executable='joint_state_publisher_gui',
+    #     name='joint_state_publisher_gui',
+    #     output='screen',
+    #     parameters=[{
+    #         'use_sim_time': use_sim_time,
+    #         'robot_description': robot_desc
+    #     }]
+    # )
     # --- 4. Rviz2 Node ---
     rviz_config_file = os.path.join(
         get_package_share_directory('diff_robot'),
@@ -66,7 +66,7 @@ def generate_launch_description():
 
     ld = LaunchDescription()
     ld.add_action(rsp_node)
-    ld.add_action(jsp_gui_node)
+    # ld.add_action(jsp_gui_node)
     ld.add_action(rviz_node)
     ld.add_action(bringup_launch)
 
