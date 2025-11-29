@@ -31,12 +31,12 @@ class HardwareBridge(Node):
     def joint_state_callback(self, msg: JointState):
         # Update the timestamp to the current time
         msg.header.stamp = self.get_clock().now().to_msg()  
-        # Republish the message on the /joint_states topic
-        # self.joint_state_publisher_.publish(msg)
+
+        # Republish the JointState msg by joint_state_publisher_
+        self.joint_state_publisher_.publish(msg)
         self.get_logger().debug(f"Relayed JointState with new timestamp: {msg.header.stamp}")
 
-        
-
+        # Publish a Twist msg by twist_publisher_
         left_vel = msg.velocity[0]
         right_vel = msg.velocity[1]
         linear_x = (right_vel + left_vel) / 2
