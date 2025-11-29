@@ -21,6 +21,7 @@ setup(
         'console_scripts': [
             'odom = bringup.odom:main',
             'tf_odom = bringup.tf_odom:main',
+            'hardware_bridge = bringup.hardware_bridge:main'
         ],
     },
     data_files=[

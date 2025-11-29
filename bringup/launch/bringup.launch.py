@@ -29,9 +29,19 @@ def generate_launch_description():
         output='screen'
     )
 
+    # Hardware bridge node
+    hardware_bridge_node = Node(
+        package=package_name,
+        executable='hardware_bridge',   # executable được khai báo trong setup.py entry_points
+        name='hardware_bridge',
+        output='screen'
+    )
+    
+
     ld = LaunchDescription()
     ld.add_action(odom_node)
     ld.add_action(tf_node)
+    ld.add_action(hardware_bridge_node)
 
     return ld
 
