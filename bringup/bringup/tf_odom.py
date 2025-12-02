@@ -14,7 +14,7 @@ class OdomTFBroadcaster(Node):
         # Đăng ký nhận thông điệp Odometry
         self.odom_subscriber = self.create_subscription(
             Odometry,
-            '/odom', 
+            '/wheel/odom', 
             self.odom_callback,
             10
         )

@@ -15,8 +15,8 @@ class HardwareBridge(Node):
         self.joint_state_publisher_ = self.create_publisher(
             JointState, "/joint_states", 10)
         
-        # self.twist_publisher_ = self.create_publisher(
-        #     Twist, "/cmd_vel", 10)
+        self.twist_publisher_ = self.create_publisher(
+            Twist, "/twist_states", 10)
 
         qos_profile = QoSProfile(
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
@@ -27,28 +27,35 @@ class HardwareBridge(Node):
         self.joint_state_subscriber_ = self.create_subscription(
             JointState, "/encoders/data_raw", self.joint_state_callback, qos_profile)
         self.get_logger().info("hardware_bridge has been started")
+        
+        # Variables for acceleration calculation
+        self.prev_time = None
+        self.prev_linear_vel = 0.0
+        self.prev_angular_vel = 0.0
 
     def joint_state_callback(self, msg: JointState):
         # Update the timestamp to the current time
         msg.header.stamp = self.get_clock().now().to_msg()  
+        current_time = self.get_clock().now()
+        msg.header.stamp = current_time.to_msg()  
 
         # Republish the JointState msg by joint_state_publisher_
         self.joint_state_publisher_.publish(msg)
         self.get_logger().debug(f"Relayed JointState with new timestamp: {msg.header.stamp}")
 
         # Publish a Twist msg by twist_publisher_
-        # left_vel = msg.velocity[0]
-        # right_vel = msg.velocity[1]
-        # linear_x = (right_vel + left_vel) / 2
-        # angular_z = (right_vel - left_vel) / base_wheel_track
+        left_vel = msg.velocity[0]
+        right_vel = msg.velocity[1]
+        linear_x = (right_vel + left_vel) / 2
+        angular_z = (right_vel - left_vel) / base_wheel_track
 
-        # twist_msg = Twist()
-        # twist_msg.linear.x = linear_x
-        # twist_msg.angular.z = angular_z
-        # self.twist_publisher_.publish(twist_msg)
-
+        twist_msg = Twist()
+        twist_msg.linear.x = linear_x
+        twist_msg.angular.z = angular_z
+        self.twist_publisher_.publish(twist_msg)
+        
         # self.get_logger().info(f"left_vel: {left_vel}, right_vel: {right_vel}")
-        # self.get_logger().info(f"linear_x: {linear_x}, angular_z: {angular_z}")
+        self.get_logger().info(f"linear_x: {linear_x:.3f}, angular_z: {angular_z:.3f}")
 
 def main(args=None):
     rclpy.init(args=args)

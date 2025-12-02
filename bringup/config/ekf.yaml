@@ -1,0 +1,45 @@
+ekf_filter_node:
+  ros__parameters:
+    frequency: 30.0
+    sensor_timeout: 0.1
+    two_d_mode: true      # Robot chỉ chạy trên sàn phẳng (x, y, yaw)
+    publish_tf: true      # EKF sẽ phát TF odom -> base_link
+
+    # --- Frame ID ---
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_footprint
+    world_frame: odom     # Chúng ta đang làm Local Fusion (tính Odom)
+
+    # --- INPUT 1: ENCODER (ODOMETRY) ---
+    # Thay '/wheel/odom' bằng tên topic thật của encoder robot bạn
+    odom0: /wheel/odom
+    
+    # Cấu hình: lấy vx, vyaw từ encoder
+    # [x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az]
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  false, false,  # vx (linear velocity)
+                   false, false, true,   # vyaw (angular velocity)
+                   false, false, false]
+    odom0_differential: false
+    odom0_queue_size: 10
+
+    # --- INPUT 2: IMU ---
+    imu0: /imu/data
+    
+    # Cấu hình: Chỉ lấy vận tốc góc (Gyroscrope Z)
+    # Vì bạn đã set orientation covariance = -1 trong code python trước, 
+    # nên dù có set true ở yaw thì EKF cũng sẽ bỏ qua thôi.
+    imu0_config: [false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, true,  # vyaw (gyro Z) -> QUAN TRỌNG NHẤT
+                  false, false, false]
+    
+    # Nếu IMU bị lắp ngược/lệch, set cái này true để EKF tự sửa (cần config thêm)
+    imu0_differential: false
+    imu0_queue_size: 10
+    
+    # Xóa gia tốc trọng trường (nếu có dùng Accel)
+    imu0_remove_gravitational_acceleration: true

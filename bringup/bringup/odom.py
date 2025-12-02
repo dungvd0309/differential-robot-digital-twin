@@ -15,7 +15,7 @@ class DiffDriveOdom(Node):
         # === 1. Khai báo Tham số (Parameters) ===
         self.declare_parameter('wheel_radius', 0.0325)
         self.declare_parameter('wheel_separation', 0.2336)
-        self.declare_parameter('odom_frame', 'odom')
+        self.declare_parameter('odom_frame', 'odom') # Tên frame mặc định
         self.declare_parameter('base_frame', 'base_footprint') # <--- SỬA THÀNH base_footprint
         
         self.wheel_radius = self.get_parameter('wheel_radius').value
@@ -36,7 +36,7 @@ class DiffDriveOdom(Node):
         self.angular_velocity = 0.0
 
         # === 3. Publishers & Subscribers ===
-        self.odom_pub = self.create_publisher(Odometry, "/" + self.odom_frame, 10)
+        self.odom_pub = self.create_publisher(Odometry, "/wheel/odom", 10) # Topic có thể có namespace
 
         self.create_subscription(JointState, "/joint_states", self.joint_cb, 10)
 

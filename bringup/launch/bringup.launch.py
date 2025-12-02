@@ -16,7 +16,7 @@ def generate_launch_description():
         parameters=[{
             'wheel_radius': 0.0325,
             'wheel_separation': 0.2336,
-            'odom_frame': 'odom',
+            'odom_frame': 'odom', # Sửa lại thành tên frame hợp lệ
             'base_frame': 'base_footprint'
         }]
     )
@@ -40,8 +40,7 @@ def generate_launch_description():
 
     ld = LaunchDescription()
     ld.add_action(odom_node)
-    ld.add_action(tf_node)
+    # ld.add_action(tf_node)
     ld.add_action(hardware_bridge_node)
 
     return ld
-
