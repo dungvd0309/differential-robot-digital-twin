@@ -8,10 +8,11 @@ from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 
 base_wheel_track = 0.2336
 
-class HardwareBridge(Node):
+class EncodersPublisher(Node):
     
     def __init__(self):
-        super().__init__("hardware_bridge")
+        super().__init__("encoders_publisher")
+        
         self.joint_state_publisher_ = self.create_publisher(
             JointState, "/joint_states", 10)
         
@@ -26,7 +27,7 @@ class HardwareBridge(Node):
         # Subscribe to the input joint states, e.g., from a simulation or another driver
         self.joint_state_subscriber_ = self.create_subscription(
             JointState, "/encoders/data_raw", self.joint_state_callback, qos_profile)
-        self.get_logger().info("hardware_bridge has been started")
+        self.get_logger().info("encoders_publisher has been started")
         
         # Variables for acceleration calculation
         self.prev_time = None
@@ -35,9 +36,7 @@ class HardwareBridge(Node):
 
     def joint_state_callback(self, msg: JointState):
         # Update the timestamp to the current time
-        msg.header.stamp = self.get_clock().now().to_msg()  
-        current_time = self.get_clock().now()
-        msg.header.stamp = current_time.to_msg()  
+        # msg.header.stamp = self.get_clock().now().to_msg()  
 
         # Republish the JointState msg by joint_state_publisher_
         self.joint_state_publisher_.publish(msg)
@@ -59,7 +58,7 @@ class HardwareBridge(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = HardwareBridge()
+    node = EncodersPublisher()
     rclpy.spin(node)
     rclpy.shutdown()
 

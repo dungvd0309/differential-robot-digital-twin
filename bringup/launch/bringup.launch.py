@@ -4,36 +4,30 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Path package nếu cần
-    package_name = 'bringup'  # Tên package của bạn
+    # Path package 
+    package_name = 'bringup' 
 
     # Node odom publisher
     odom_node = Node(
         package=package_name,
-        executable='odom',      # executable được khai báo trong setup.py entry_points
-        name='diff_drive_odom',
-        output='screen',
-        parameters=[{
-            'wheel_radius': 0.0325,
-            'wheel_separation': 0.2336,
-            'odom_frame': 'odom', # Sửa lại thành tên frame hợp lệ
-            'base_frame': 'base_footprint'
-        }]
+        executable='odom_publisher', 
+        name='odom_publisher',
+        output='screen'
     )
 
     # Node TF broadcaster
     tf_node = Node(
         package=package_name,
-        executable='tf_odom',   # executable được khai báo trong setup.py entry_points
+        executable='tf_odom', 
         name='odom_tf_broadcaster',
         output='screen'
     )
 
-    # Hardware bridge node
-    hardware_bridge_node = Node(
+    # encoders_publisher node
+    encoders_publisher = Node(
         package=package_name,
-        executable='hardware_bridge',   # executable được khai báo trong setup.py entry_points
-        name='hardware_bridge',
+        executable='encoders_publisher',
+        name='encoders_publisher',
         output='screen'
     )
     
@@ -41,6 +35,6 @@ def generate_launch_description():
     ld = LaunchDescription()
     ld.add_action(odom_node)
     # ld.add_action(tf_node)
-    ld.add_action(hardware_bridge_node)
+    ld.add_action(encoders_publisher)
 
     return ld

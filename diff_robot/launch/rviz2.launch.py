@@ -12,7 +12,7 @@ def generate_launch_description():
             os.path.join(
                 get_package_share_directory('bringup'),
                 'launch',
-                'bringup.launch.py'  # tên file launch cũ
+                'bringup.launch.py'  
             )
         )
     )
@@ -54,14 +54,14 @@ def generate_launch_description():
     rviz_config_file = os.path.join(
         get_package_share_directory('diff_robot'),
         'rviz',
-        'diff_robot.rviz'  # <-- tạo sẵn file config Rviz nếu muốn custom
+        'diff_robot.rviz'  
     )
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='screen',
-        arguments=['-d', rviz_config_file]  # nếu không có file config thì bỏ ['-d', ...]
+        arguments=['-d', rviz_config_file]  
     )
 
     ld = LaunchDescription()

@@ -8,20 +8,20 @@ import tf_transformations
 import math
 import numpy as np
 
-class DiffDriveOdom(Node):
+class OdomPublisher(Node):
     def __init__(self):
-        super().__init__('diff_drive_odom')
+        super().__init__('odom_publisher')
 
         # === 1. Khai báo Tham số (Parameters) ===
         self.declare_parameter('wheel_radius', 0.0325)
-        self.declare_parameter('wheel_separation', 0.2336)
-        self.declare_parameter('odom_frame', 'odom') # Tên frame mặc định
-        self.declare_parameter('base_frame', 'base_footprint') # <--- SỬA THÀNH base_footprint
+        self.declare_parameter('wheel_separation', 0.237) # original = 0.2336
+        self.declare_parameter('odom_frame', 'odom')
+        self.declare_parameter('base_frame', 'base_footprint') 
         
         self.wheel_radius = self.get_parameter('wheel_radius').value
         self.wheel_separation = self.get_parameter('wheel_separation').value
         self.odom_frame = self.get_parameter('odom_frame').value
-        self.base_frame = self.get_parameter('base_frame').value # Giá trị là 'base_footprint'
+        self.base_frame = self.get_parameter('base_frame').value
         
         # === 2. Trạng thái nội bộ (Internal State) ===
         self.last_time = None
@@ -36,11 +36,10 @@ class DiffDriveOdom(Node):
         self.angular_velocity = 0.0
 
         # === 3. Publishers & Subscribers ===
-        self.odom_pub = self.create_publisher(Odometry, "/wheel/odom", 10) # Topic có thể có namespace
-
+        self.odom_pub = self.create_publisher(Odometry, "/wheel/odom", 10) 
         self.create_subscription(JointState, "/joint_states", self.joint_cb, 10)
 
-        self.get_logger().info("Diff-drive odom node started")
+        self.get_logger().info("odom_publisher node started")
 
     def joint_cb(self, msg: JointState):
         current_time = self.get_clock().now()
@@ -55,6 +54,8 @@ class DiffDriveOdom(Node):
 
         left_pos = msg.position[li]
         right_pos = msg.position[ri]
+        left_vel = msg.velocity[li]
+        right_vel = msg.velocity[ri]
 
         # Khởi tạo lần đầu
         if self.last_time is None:
@@ -75,8 +76,8 @@ class DiffDriveOdom(Node):
         d_center = (d_left + d_right) / 2.0
         d_theta = (d_right - d_left) / self.wheel_separation
         
-        self.linear_velocity = d_center / dt
-        self.angular_velocity = d_theta / dt
+        self.linear_velocity = (left_vel + right_vel) / 2.0
+        self.angular_velocity = (right_vel - left_vel) / self.wheel_separation
         
         # Tích phân để ra Pose (Vị trí)
         if abs(d_theta) < 1e-6:
@@ -107,9 +108,9 @@ class DiffDriveOdom(Node):
         odom.twist.twist.linear.x = self.linear_velocity
         odom.twist.twist.angular.z = self.angular_velocity
         
-        # Covariance
-        pose_diag = np.array([1e-3, 1e-3, 1e6, 1e6, 1e6, 1e-3])
-        twist_diag = np.array([1e-3, 1e-3, 1e6, 1e6, 1e6, 1e-3])
+        # Covariance: X, Y, Z, Roll, Pitch, Yaw (1e6 = not used)
+        pose_diag = np.array([1e-2, 1e-2, 1e6, 1e6, 1e6, 1e-2]) # position
+        twist_diag = np.array([1e-4, 1e6, 1e6, 1e6, 1e6, 5e-4]) # velocity
 
         odom.pose.covariance = np.diag(pose_diag).flatten().tolist()
         odom.twist.covariance = np.diag(twist_diag).flatten().tolist()
@@ -124,7 +125,7 @@ class DiffDriveOdom(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = DiffDriveOdom()
+    node = OdomPublisher()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

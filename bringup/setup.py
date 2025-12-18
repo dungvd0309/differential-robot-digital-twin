@@ -21,9 +21,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'odom = bringup.odom:main',
+            'odom_publisher = bringup.odom_publisher:main',
             'tf_odom = bringup.tf_odom:main',
-            'hardware_bridge = bringup.hardware_bridge:main'
+            'encoders_publisher = bringup.encoders_publisher:main',
+            'imu_publisher = bringup.imu_publisher:main',
         ],
     },
     data_files=[
