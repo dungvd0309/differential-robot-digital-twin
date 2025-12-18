@@ -50,6 +50,7 @@ def generate_launch_description():
     #         'robot_description': robot_desc
     #     }]
     # )
+    
     # --- 4. Rviz2 Node ---
     rviz_config_file = os.path.join(
         get_package_share_directory('diff_robot'),

@@ -10,22 +10,26 @@ def generate_launch_description():
         'ekf.yaml'
     )
 
-    return LaunchDescription([
+    # EKF Robot Localization
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[config_file_path],
+        remappings=[('/odometry/filtered', '/filtered_odom')] 
+    )
+    
+    # Phát TF tam cho IMU 
+    imu_tf_node = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=['0', '0', '0', '0', '0', '0', '1', 'base_footprint', 'imu_link']
+    )
 
-        # 2. Chạy EKF Robot Localization
-        Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='ekf_filter_node',
-            output='screen',
-            parameters=[config_file_path],
-            remappings=[('/odometry/filtered', '/filtered_odom')] 
-        ),
-        
-        # 3. Phát TF tam cho IMU 
-        Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            arguments=['0', '0', '0', '0', '0', '0', '1', 'base_footprint', 'imu_link']
-        ),
-    ])
+
+    ld = LaunchDescription()
+    ld.add_action(ekf_node)
+    ld.add_action(imu_tf_node)
+
+    return ld

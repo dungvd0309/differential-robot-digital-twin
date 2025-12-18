@@ -25,6 +25,7 @@ setup(
             'tf_odom = bringup.tf_odom:main',
             'encoders_publisher = bringup.encoders_publisher:main',
             'imu_publisher = bringup.imu_publisher:main',
+            'image_publisher = bringup.image_publisher:main'
         ],
     },
     data_files=[

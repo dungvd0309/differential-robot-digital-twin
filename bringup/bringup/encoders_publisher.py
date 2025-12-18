@@ -29,18 +29,12 @@ class EncodersPublisher(Node):
             JointState, "/encoders/data_raw", self.joint_state_callback, qos_profile)
         self.get_logger().info("encoders_publisher has been started")
         
-        # Variables for acceleration calculation
-        self.prev_time = None
-        self.prev_linear_vel = 0.0
-        self.prev_angular_vel = 0.0
-
     def joint_state_callback(self, msg: JointState):
         # Update the timestamp to the current time
         # msg.header.stamp = self.get_clock().now().to_msg()  
 
         # Republish the JointState msg by joint_state_publisher_
         self.joint_state_publisher_.publish(msg)
-        self.get_logger().debug(f"Relayed JointState with new timestamp: {msg.header.stamp}")
 
         # Publish a Twist msg by twist_publisher_
         left_vel = msg.velocity[0]
@@ -54,7 +48,7 @@ class EncodersPublisher(Node):
         self.twist_publisher_.publish(twist_msg)
         
         # self.get_logger().info(f"left_vel: {left_vel}, right_vel: {right_vel}")
-        self.get_logger().info(f"linear_x: {linear_x:.3f}, angular_z: {angular_z:.3f}")
+        # self.get_logger().info(f"linear_x: {linear_x:.3f}, angular_z: {angular_z:.3f}")
 
 def main(args=None):
     rclpy.init(args=args)
