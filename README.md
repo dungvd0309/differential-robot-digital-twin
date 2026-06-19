@@ -1,5 +1,5 @@
 # Differential Robot Digital Twin
-***⚠️ Under Development ⚠️***
+***⚠️ Abandoned ⚠️***
 
 [Differential Robot Firmware](https://github.com/dungvd0309/differential-robot-firmware)
 ## Packages
